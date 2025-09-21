@@ -2,6 +2,7 @@
 
 > **Google Gen AI Hackathon 2025 - Professional Track Winner**
 
+<<<<<<< HEAD
 [![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge&logo=vercel)](https://your-frontend-url.vercel.app)
 [![Backend API](https://img.shields.io/badge/Backend-API-blue?style=for-the-badge&logo=node.js)](https://your-backend-url.vercel.app/api/health)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/yourusername/easemytrip-genai-trip-planner)
@@ -14,10 +15,25 @@
 ## 🎯 Executive Summary
 
 **EaseMyTrip AI Travel Planner** addresses the critical challenge of creating personalized, end-to-end travel itineraries that adapt to individual budgets, interests, and real-time conditions. Built specifically for EaseMyTrip's platform integration, our solution transforms generic travel recommendations into intelligent, contextually-aware travel experiences.
+=======
+Node.js (v18.0 or higher)
+npm (comes with Node.js)
+Git - Download Here
+Google Account (for API keys)
+
+1. Clone the Repository
+bash
+git clone https://github.com/Shubham24S/easemytrip-genai-trip-planner.git
+cd easemytrip-genai-trip-planner
+2. Get Required API Keys
+Google Gemini API Key (FREE)
+Visit Google AI Studio
+>>>>>>> 152a95b621c6e9f031647a2310067dae1b2f4659
 
 ### **The Challenge**
 Modern travelers struggle with fragmented booking processes, generic recommendations, and time-consuming research across multiple platforms. Existing solutions fail to provide truly personalized experiences that consider individual preferences, budget constraints, and real-time availability.
 
+<<<<<<< HEAD
 ### **Our Innovation**
 We developed an AI-powered travel intelligence engine that generates comprehensive, personalized itineraries in real-time, featuring seamless integration capabilities with EaseMyTrip's existing booking infrastructure and payment systems.
 
@@ -42,6 +58,17 @@ We developed an AI-powered travel intelligence engine that generates comprehensi
 ---
 
 ## 🤖 AI Technology Architecture
+=======
+Click "Get API Key" → "Create API key in new project"
+Copy the generated API key (starts with AIzaSy...)
+Google Maps API Key (FREE with $300 credit)
+Visit Google Cloud Console
+
+Create a new project or select existing
+Enable "Maps JavaScript API"
+Go to Credentials → Create API Key
+Copy the generated API key
+>>>>>>> 152a95b621c6e9f031647a2310067dae1b2f4659
 
 ### **Google Gemini 1.5 Flash Integration**
 Our solution leverages Google's most advanced generative AI model for natural language understanding and contextual itinerary generation. The system processes complex user preferences and generates structured, actionable travel plans with remarkable accuracy and cultural relevance.
@@ -135,6 +162,7 @@ Sophisticated prompt architecture ensures consistent, high-quality outputs with 
 
 ## 🎨 User Experience Excellence
 
+<<<<<<< HEAD
 ### **Design Philosophy**
 Clean, intuitive interface designed for both tech-savvy millennials and traditional travelers. The user journey is optimized for conversion while maintaining the sophisticated aesthetic expected by modern consumers.
 
@@ -353,3 +381,9 @@ Comprehensive developer documentation for integration and customization.
 **© 2025 EaseMyTrip AI Travel Planner. All rights reserved.**
 
 </div>
+=======
+json
+{
+  "proxy": "http://localhost:5000"
+}
+>>>>>>> 152a95b621c6e9f031647a2310067dae1b2f4659
