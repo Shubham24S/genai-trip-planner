@@ -5,17 +5,14 @@ AI-Powered Personalized Trip Planner for EaseMyTrip - Google Gen AI Hackathon 20
 Prerequisites
 Before you begin, ensure you have the following installed:
 
-Node.js (v18.0 or higher) - Download Here
-
+Node.js (v18.0 or higher)
 npm (comes with Node.js)
-
 Git - Download Here
-
 Google Account (for API keys)
 
 1. Clone the Repository
 bash
-git clone https://github.com/yourusername/easemytrip-genai-trip-planner.git
+git clone https://github.com/Shubham24S/easemytrip-genai-trip-planner.git
 cd easemytrip-genai-trip-planner
 2. Get Required API Keys
 Google Gemini API Key (FREE)
@@ -24,18 +21,13 @@ Visit Google AI Studio
 Sign in with your Google account
 
 Click "Get API Key" → "Create API key in new project"
-
 Copy the generated API key (starts with AIzaSy...)
-
 Google Maps API Key (FREE with $300 credit)
 Visit Google Cloud Console
 
 Create a new project or select existing
-
 Enable "Maps JavaScript API"
-
 Go to Credentials → Create API Key
-
 Copy the generated API key
 
 3. Backend Setup
