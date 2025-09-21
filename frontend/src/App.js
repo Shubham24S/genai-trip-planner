@@ -1,8 +1,6 @@
-import './index.css';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import TripPlannerForm from './components/TripPlannerForm';
-import ItineraryDisplay from './components/ItineraryDisplay';
 import './App.css';
 
 function App() {
@@ -23,7 +21,6 @@ function App() {
         <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
           <Routes>
             <Route path="/" element={<TripPlannerForm />} />
-            <Route path="/itinerary" element={<ItineraryDisplay />} />
           </Routes>
         </main>
         
