@@ -3,6 +3,38 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
+// ── Interest config ────────────────────────────────────────────────────────
+const INTEREST_OPTIONS = [
+  { id: 'heritage',    label: 'Heritage',    icon: '🏛️' },
+  { id: 'adventure',   label: 'Adventure',   icon: '🧗' },
+  { id: 'nightlife',   label: 'Nightlife',   icon: '🌃' },
+  { id: 'nature',      label: 'Nature',      icon: '🌿' },
+  { id: 'culture',     label: 'Culture',     icon: '🎭' },
+  { id: 'food',        label: 'Food',        icon: '🍛' },
+  { id: 'shopping',    label: 'Shopping',    icon: '🛍️' },
+  { id: 'relaxation',  label: 'Relaxation',  icon: '🧘' },
+  { id: 'photography', label: 'Photography', icon: '📷' },
+  { id: 'spiritual',   label: 'Spiritual',   icon: '🕌' },
+];
+
+const TRAVEL_STYLE_OPTIONS = [
+  { value: 'budget',   label: 'Budget Traveler',     icon: '🎒' },
+  { value: 'balanced', label: 'Balanced Experience', icon: '⚖️' },
+  { value: 'luxury',   label: 'Luxury Travel',       icon: '✨' },
+];
+
+// ── Budget breakdown icons ─────────────────────────────────────────────────
+const BUDGET_ICONS = {
+  accommodation: '🏨',
+  food: '🍽️',
+  transport: '🚗',
+  activities: '🎯',
+  shopping: '🛍️',
+  miscellaneous: '📦',
+  misc: '📦',
+};
+
+// ── Main component ─────────────────────────────────────────────────────────
 const TripPlannerForm = () => {
   const [formData, setFormData] = useState({
     destination: '',
@@ -10,26 +42,15 @@ const TripPlannerForm = () => {
     budget: 25000,
     interests: [],
     groupSize: 2,
-    travelStyle: 'balanced'
+    travelStyle: 'balanced',
   });
-  
-  const [itinerary, setItinerary] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [popularDestinations, setPopularDestinations] = useState([]);
-  
-  const interestOptions = [
-    'heritage', 'adventure', 'nightlife', 'nature', 'culture', 
-    'food', 'shopping', 'relaxation', 'photography', 'spiritual'
-  ];
-  
-  const travelStyleOptions = [
-    { value: 'budget', label: 'Budget Traveler' },
-    { value: 'balanced', label: 'Balanced Experience' },
-    { value: 'luxury', label: 'Luxury Travel' }
-  ];
 
-  // Fetch popular destinations on component mount
+  const [itinerary, setItinerary]                 = useState(null);
+  const [loading, setLoading]                     = useState(false);
+  const [error, setError]                         = useState(null);
+  const [popularDestinations, setPopularDestinations] = useState([]);
+
+  // ── Fetch popular destinations on mount (unchanged) ──────────────────────
   useEffect(() => {
     fetchPopularDestinations();
   }, []);
@@ -40,16 +61,17 @@ const TripPlannerForm = () => {
       if (response.data.success) {
         setPopularDestinations(response.data.data);
       }
-    } catch (error) {
-      console.error('Error fetching destinations:', error);
+    } catch (err) {
+      console.error('Error fetching destinations:', err);
     }
   };
 
+  // ── Handlers (unchanged logic) ───────────────────────────────────────────
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'number' ? parseInt(value) || 0 : value
+      [name]: type === 'number' ? parseInt(value) || 0 : value,
     }));
   };
 
@@ -58,7 +80,7 @@ const TripPlannerForm = () => {
       ...prev,
       interests: prev.interests.includes(interest)
         ? prev.interests.filter(i => i !== interest)
-        : [...prev.interests, interest]
+        : [...prev.interests, interest],
     }));
   };
 
@@ -66,29 +88,26 @@ const TripPlannerForm = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
       console.log('Submitting form data:', formData);
-      
+
       const response = await axios.post(`${API_URL}/api/generate-itinerary`, formData);
-      
+
       if (response.data.success) {
         setItinerary(response.data.data);
-        // Scroll to results
         setTimeout(() => {
           const resultsSection = document.getElementById('results');
-          if (resultsSection) {
-            resultsSection.scrollIntoView({ behavior: 'smooth' });
-          }
+          if (resultsSection) resultsSection.scrollIntoView({ behavior: 'smooth' });
         }, 100);
       } else {
         setError(response.data.error || 'Failed to generate itinerary');
       }
-    } catch (error) {
-      console.error('Error generating itinerary:', error);
+    } catch (err) {
+      console.error('Error generating itinerary:', err);
       setError(
-        error.response?.data?.message || 
-        error.message || 
+        err.response?.data?.message ||
+        err.message ||
         'Failed to generate itinerary. Please try again.'
       );
     } finally {
@@ -96,55 +115,69 @@ const TripPlannerForm = () => {
     }
   };
 
+  const isValid = formData.destination.trim() && formData.duration && formData.budget;
+
+  // ── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="container mx-auto px-4 max-w-4xl">
-      {/* Form Section */}
-      <div className="card">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">
-          ✨ Create Your Perfect Trip
-        </h2>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Destination Input */}
+    <div className="tp-wrapper">
+
+      {/* ── Form card ──────────────────────────────────────────────────── */}
+      <div className="tp-card">
+
+        <div className="tp-card-header">
+          <div className="tp-card-icon">🗺️</div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              🌍 Destination *
+            <div className="tp-card-title">Plan your trip</div>
+            <div className="tp-card-subtitle">Fill in your preferences — AI does the rest</div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="tp-form" noValidate>
+
+          {/* ── Section: Where & When ─────────────────────────────────── */}
+          <div className="tp-section-label">
+            <span>Where &amp; When</span>
+            <span className="tp-section-line" />
+          </div>
+
+          {/* Destination */}
+          <div className="tp-field">
+            <label className="tp-label">
+              <span>📍</span> Destination <span className="tp-required">*</span>
             </label>
             <input
               type="text"
               name="destination"
               value={formData.destination}
               onChange={handleInputChange}
-              placeholder="e.g., Goa, Rajasthan, Kerala..."
-              className="form-input"
+              placeholder="e.g., Goa, Rajasthan, Kerala, Ladakh…"
+              className="tp-input"
               required
             />
-            
-            {/* Popular Destinations */}
+
+            {/* Popular destinations quick-fill */}
             {popularDestinations.length > 0 && (
-              <div className="mt-2">
-                <p className="text-xs text-gray-500 mb-1">Popular destinations:</p>
-                <div className="flex flex-wrap gap-1">
-                  {popularDestinations.slice(0, 6).map(dest => (
-                    <button
-                      key={dest.name}
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, destination: dest.name }))}
-                      className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors"
-                    >
-                      {dest.name}
-                    </button>
-                  ))}
-                </div>
+              <div className="tp-quick-picks">
+                <span className="tp-quick-label">Popular:</span>
+                {popularDestinations.slice(0, 6).map(dest => (
+                  <button
+                    key={dest.name}
+                    type="button"
+                    className={`tp-quick-btn${formData.destination === dest.name ? ' active' : ''}`}
+                    onClick={() => setFormData(prev => ({ ...prev, destination: dest.name }))}
+                  >
+                    {dest.name}
+                  </button>
+                ))}
               </div>
             )}
           </div>
-          
-          {/* Duration and Budget */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                📅 Duration (days) *
+
+          {/* Duration + Budget + Group size — 3 columns */}
+          <div className="tp-row-3">
+            <div className="tp-field">
+              <label className="tp-label">
+                <span>📅</span> Duration (days) <span className="tp-required">*</span>
               </label>
               <input
                 type="number"
@@ -153,14 +186,14 @@ const TripPlannerForm = () => {
                 onChange={handleInputChange}
                 min="1"
                 max="30"
-                className="form-input"
+                className="tp-input"
                 required
               />
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                💰 Budget (₹) *
+
+            <div className="tp-field">
+              <label className="tp-label">
+                <span>💰</span> Budget (₹) <span className="tp-required">*</span>
               </label>
               <input
                 type="number"
@@ -169,15 +202,13 @@ const TripPlannerForm = () => {
                 onChange={handleInputChange}
                 min="5000"
                 step="1000"
-                className="form-input"
+                className="tp-input"
                 required
               />
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                👥 Group Size
-              </label>
+
+            <div className="tp-field">
+              <label className="tp-label"><span>👥</span> Group Size</label>
               <input
                 type="number"
                 name="groupSize"
@@ -185,248 +216,265 @@ const TripPlannerForm = () => {
                 onChange={handleInputChange}
                 min="1"
                 max="20"
-                className="form-input"
+                className="tp-input"
               />
             </div>
           </div>
-          
-          {/* Travel Style */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              🎯 Travel Style
-            </label>
-            <select
-              name="travelStyle"
-              value={formData.travelStyle}
-              onChange={handleInputChange}
-              className="form-input"
-            >
-              {travelStyleOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          {/* Interests */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              ❤️ Your Interests (select multiple)
-            </label>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-              {interestOptions.map(interest => (
-                <label
-                  key={interest}
-                  className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${
-                    formData.interests.includes(interest)
-                      ? 'bg-blue-50 border-blue-300 text-blue-700'
-                      : 'bg-white border-gray-200 hover:bg-gray-50'
-                  }`}
+
+          {/* Travel Style — pill selector */}
+          <div className="tp-field">
+            <label className="tp-label"><span>🎯</span> Travel Style</label>
+            <div className="tp-style-row">
+              {TRAVEL_STYLE_OPTIONS.map(opt => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  className={`tp-style-pill${formData.travelStyle === opt.value ? ' active' : ''}`}
+                  onClick={() => setFormData(prev => ({ ...prev, travelStyle: opt.value }))}
                 >
-                  <input
-                    type="checkbox"
-                    checked={formData.interests.includes(interest)}
-                    onChange={() => handleInterestToggle(interest)}
-                    className="sr-only"
-                  />
-                  <span className="text-sm font-medium capitalize">{interest}</span>
-                </label>
+                  <span>{opt.icon}</span>
+                  <span>{opt.label}</span>
+                </button>
               ))}
             </div>
           </div>
-          
-          {/* Submit Button */}
+
+          {/* ── Section: Interests ────────────────────────────────────── */}
+          <div className="tp-section-label">
+            <span>Your Interests</span>
+            <span className="tp-section-line" />
+          </div>
+
+          <div className="tp-field">
+            <label className="tp-label"><span>❤️</span> Select everything that excites you</label>
+            <div className="tp-interests-grid">
+              {INTEREST_OPTIONS.map(({ id, label, icon }) => {
+                const selected = formData.interests.includes(id);
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    className={`tp-interest-pill${selected ? ' selected' : ''}`}
+                    onClick={() => handleInterestToggle(id)}
+                    aria-pressed={selected}
+                  >
+                    <span>{icon}</span>
+                    <span>{label}</span>
+                    {selected && <span className="tp-pill-check">✓</span>}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="tp-error" role="alert">
+              <span>⚠️</span>
+              <div>
+                <strong>Something went wrong</strong>
+                <p>{error}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Submit */}
           <button
             type="submit"
-            disabled={loading || !formData.destination || !formData.duration || !formData.budget}
-            className="btn-primary w-full text-lg py-4 mt-8"
+            className="tp-submit"
+            disabled={loading || !isValid}
           >
             {loading ? (
               <>
-                <div className="loading-spinner"></div>
-                Generating Your Perfect Trip...
+                <span className="tp-spinner" />
+                Building your itinerary…
               </>
             ) : (
-              '🚀 Create My AI Trip Plan'
+              <>
+                <span>✈️</span>
+                Create My AI Trip Plan
+              </>
             )}
           </button>
+
         </form>
       </div>
-      
-      {/* Error Display */}
-      {error && (
-        <div className="card bg-red-50 border-red-200">
-          <div className="flex items-center">
-            <div className="text-red-500 mr-3">⚠️</div>
-            <div>
-              <h3 className="font-medium text-red-800">Error</h3>
-              <p className="text-red-700">{error}</p>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* Results Section */}
+
+      {/* ── Results ────────────────────────────────────────────────────── */}
       {itinerary && (
         <div id="results">
           <ItineraryResults itinerary={itinerary} preferences={formData} />
         </div>
       )}
+
     </div>
   );
 };
 
-// Itinerary Results Component
+// ── ItineraryResults ───────────────────────────────────────────────────────
 const ItineraryResults = ({ itinerary, preferences }) => {
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="card bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
-            🎉 Your Perfect Trip to {itinerary.destination}!
-          </h2>
-          <p className="text-gray-600">
-            {itinerary.duration} days • ₹{itinerary.totalBudget.toLocaleString()} budget • 
-            Generated by AI for {preferences.interests.join(', ')} lovers
-          </p>
-        </div>
+    <div className="ir-wrapper">
+
+      {/* ── Hero banner ──────────────────────────────────────────────── */}
+      <div className="ir-hero">
+        <div className="ir-hero-badge">✓ Itinerary Ready</div>
+        <h2 className="ir-hero-title">Your trip to {itinerary.destination} 🎉</h2>
+        <p className="ir-hero-meta">
+          {itinerary.duration} days
+          {itinerary.totalBudget ? ` · ₹${itinerary.totalBudget.toLocaleString()} total budget` : ''}
+          {preferences.interests.length > 0 && ` · ${preferences.interests.join(', ')}`}
+        </p>
       </div>
-      
-      {/* Budget Breakdown */}
+
+      {/* ── Budget breakdown ─────────────────────────────────────────── */}
       {itinerary.budgetBreakdown && (
-        <div className="card">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">💰 Budget Breakdown</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="ir-card">
+          <h3 className="ir-section-title">💰 Budget Breakdown</h3>
+          <div className="ir-budget-grid">
             {Object.entries(itinerary.budgetBreakdown).map(([category, amount]) => (
-              <div key={category} className="text-center p-3 bg-gray-50 rounded-lg">
-                <div className="text-lg font-semibold text-blue-600">
-                  ₹{amount.toLocaleString()}
+              <div key={category} className="ir-budget-item">
+                <div className="ir-budget-icon">
+                  {BUDGET_ICONS[category.toLowerCase()] || '💸'}
                 </div>
-                <div className="text-sm text-gray-600 capitalize">{category}</div>
+                <div className="ir-budget-amount">₹{Number(amount).toLocaleString()}</div>
+                <div className="ir-budget-label">{category}</div>
               </div>
             ))}
           </div>
         </div>
       )}
-      
-      {/* Daily Itinerary */}
+
+      {/* ── Day-by-day ───────────────────────────────────────────────── */}
       {itinerary.dailyItinerary && (
-        <div className="card">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">📅 Day-by-Day Itinerary</h3>
-          <div className="space-y-4">
+        <div className="ir-card">
+          <h3 className="ir-section-title">📅 Day-by-Day Itinerary</h3>
+          <div className="ir-days">
             {itinerary.dailyItinerary.map((day, index) => (
-              <div key={index} className="border rounded-lg p-4">
-                <h4 className="font-bold text-lg text-blue-600 mb-3">
-                  Day {day.day} - Daily Budget: ₹{day.dailyCost?.toLocaleString() || 'N/A'}
-                </h4>
-                
+              <div key={index} className="ir-day">
+
+                {/* Day header */}
+                <div className="ir-day-header">
+                  <div className="ir-day-number">Day {day.day}</div>
+                  {day.dailyCost != null && (
+                    <div className="ir-day-cost">
+                      ₹{day.dailyCost.toLocaleString()} today
+                    </div>
+                  )}
+                </div>
+
                 {/* Activities */}
-                {day.activities && (
-                  <div className="mb-3">
-                    <h5 className="font-medium text-gray-700 mb-2">🎯 Activities:</h5>
-                    {day.activities.map((activity, i) => (
-                      <div key={i} className="ml-4 mb-2 p-2 bg-blue-50 rounded">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <span className="font-medium">{activity.time}</span> - 
-                            <span className="ml-1">{activity.activity}</span>
+                {day.activities?.length > 0 && (
+                  <div className="ir-day-section">
+                    <div className="ir-day-section-label">🎯 Activities</div>
+                    <div className="ir-activities">
+                      {day.activities.map((activity, i) => (
+                        <div key={i} className="ir-activity">
+                          <div className="ir-activity-time">{activity.time}</div>
+                          <div className="ir-activity-body">
+                            <div className="ir-activity-name">{activity.activity}</div>
                             {activity.location && (
-                              <div className="text-sm text-gray-600">📍 {activity.location}</div>
+                              <div className="ir-activity-loc">📍 {activity.location}</div>
                             )}
                             {activity.description && (
-                              <div className="text-sm text-gray-600 mt-1">{activity.description}</div>
+                              <div className="ir-activity-desc">{activity.description}</div>
                             )}
                           </div>
-                          <div className="text-sm font-medium text-green-600">
-                            ₹{activity.cost}
-                          </div>
+                          <div className="ir-activity-cost">₹{activity.cost}</div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 )}
-                
+
                 {/* Meals */}
-                {day.meals && (
-                  <div>
-                    <h5 className="font-medium text-gray-700 mb-2">🍽️ Meals:</h5>
-                    {day.meals.map((meal, i) => (
-                      <div key={i} className="ml-4 mb-1 p-2 bg-orange-50 rounded text-sm">
-                        <span className="capitalize font-medium">{meal.type}</span> at {meal.restaurant} 
-                        - {meal.cuisine} cuisine - ₹{meal.cost}
-                      </div>
-                    ))}
+                {day.meals?.length > 0 && (
+                  <div className="ir-day-section">
+                    <div className="ir-day-section-label">🍽️ Meals</div>
+                    <div className="ir-meals">
+                      {day.meals.map((meal, i) => (
+                        <div key={i} className="ir-meal">
+                          <span className="ir-meal-type">{meal.type}</span>
+                          <span className="ir-meal-info">
+                            {meal.restaurant} · {meal.cuisine} cuisine
+                          </span>
+                          <span className="ir-meal-cost">₹{meal.cost}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
+
               </div>
             ))}
           </div>
         </div>
       )}
-      
-      {/* Accommodation */}
+
+      {/* ── Accommodation ────────────────────────────────────────────── */}
       {itinerary.accommodation && (
-        <div className="card">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">🏨 Accommodation</h3>
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <h4 className="font-semibold">{itinerary.accommodation.name}</h4>
-            <p className="text-gray-600">
-              {itinerary.accommodation.type} • ₹{itinerary.accommodation.pricePerNight}/night • 
-              Total: ₹{itinerary.accommodation.totalCost}
-            </p>
-            {itinerary.accommodation.amenities && (
-              <div className="mt-2">
-                <span className="text-sm text-gray-600">Amenities: </span>
-                <span className="text-sm">{itinerary.accommodation.amenities.join(', ')}</span>
+        <div className="ir-card">
+          <h3 className="ir-section-title">🏨 Accommodation</h3>
+          <div className="ir-hotel">
+            <div className="ir-hotel-name">{itinerary.accommodation.name}</div>
+            <div className="ir-hotel-meta">
+              <span className="ir-hotel-tag">{itinerary.accommodation.type}</span>
+              <span>₹{itinerary.accommodation.pricePerNight}/night</span>
+              <span>Total ₹{itinerary.accommodation.totalCost}</span>
+            </div>
+            {itinerary.accommodation.amenities?.length > 0 && (
+              <div className="ir-hotel-amenities">
+                {itinerary.accommodation.amenities.map((a, i) => (
+                  <span key={i} className="ir-amenity-tag">{a}</span>
+                ))}
               </div>
             )}
           </div>
         </div>
       )}
-      
-      {/* Highlights & Tips */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {itinerary.highlights && (
-          <div className="card">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">⭐ Trip Highlights</h3>
-            <ul className="space-y-2">
-              {itinerary.highlights.map((highlight, index) => (
-                <li key={index} className="flex items-start">
-                  <span className="text-yellow-500 mr-2">✨</span>
-                  <span>{highlight}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        
-        {itinerary.localTips && (
-          <div className="card">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">💡 Local Tips</h3>
-            <ul className="space-y-2">
-              {itinerary.localTips.map((tip, index) => (
-                <li key={index} className="flex items-start">
-                  <span className="text-blue-500 mr-2">💡</span>
-                  <span className="text-sm">{tip}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+
+      {/* ── Highlights + Tips ────────────────────────────────────────── */}
+      {(itinerary.highlights || itinerary.localTips) && (
+        <div className="ir-two-col">
+          {itinerary.highlights && (
+            <div className="ir-card">
+              <h3 className="ir-section-title">⭐ Trip Highlights</h3>
+              <ul className="ir-list">
+                {itinerary.highlights.map((h, i) => (
+                  <li key={i} className="ir-list-item">
+                    <span className="ir-list-icon">✨</span>
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {itinerary.localTips && (
+            <div className="ir-card">
+              <h3 className="ir-section-title">💡 Local Tips</h3>
+              <ul className="ir-list">
+                {itinerary.localTips.map((tip, i) => (
+                  <li key={i} className="ir-list-item">
+                    <span className="ir-list-icon" style={{ color: 'var(--indigo-lt)' }}>💡</span>
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── CTA ──────────────────────────────────────────────────────── */}
+      <div className="ir-cta">
+        <div className="ir-cta-text">
+          <div className="ir-cta-title">Ready to make it official?</div>
+          <div className="ir-cta-sub">One-click booking · Best prices · 24/7 support</div>
+        </div>
+        <button className="ir-cta-btn">🎫 Book Now with AI Trip Planner</button>
       </div>
-      
-      {/* Book Now Button */}
-      <div className="card bg-gradient-to-r from-orange-50 to-red-50 border-orange-200 text-center">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">Ready to Book Your Trip?</h3>
-        <button className="btn-primary text-lg px-8 py-3">
-          🎫 Book Now with EaseMyTrip
-        </button>
-        <p className="text-sm text-gray-600 mt-2">
-          One-click booking • Best prices • 24/7 support
-        </p>
-      </div>
+
     </div>
   );
 };

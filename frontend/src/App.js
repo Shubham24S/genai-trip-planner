@@ -7,26 +7,35 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <header className="App-header">
-          <div className="container mx-auto px-4">
-            <h1 className="text-3xl font-bold text-center py-4">
-              🚀 EaseMyTrip AI Travel Planner
+
+        {/* ── Header ───────────────────────────────────────── */}
+        <header className="app-header">
+          <div className="header-inner">
+            <div className="header-eyebrow">
+              ✦ AI-Powered
+            </div>
+            <h1 className="header-title">
+              Plan your perfect<br />
+              <span>Indian adventure</span>
             </h1>
-            <p className="text-center text-gray-600 mb-6">
-              Powered by Google Gemini AI - Create your perfect Indian adventure
+            <p className="header-sub">
+              Describe your dream trip — our AI builds a personalised day-by-day itinerary in seconds.
             </p>
           </div>
         </header>
-        
-        <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+
+        {/* ── Main ─────────────────────────────────────────── */}
+        <main className="app-main">
           <Routes>
             <Route path="/" element={<TripPlannerForm />} />
           </Routes>
         </main>
-        
-        <footer className="bg-gray-800 text-white py-4 text-center">
-          <p>&copy; 2025 EaseMyTrip AI Planner - Google Gen AI Hackathon</p>
+
+        {/* ── Footer ───────────────────────────────────────── */}
+        <footer className="app-footer">
+          © 2026 AI Travel Planner — powered by <span>Groq</span>
         </footer>
+
       </div>
     </Router>
   );
