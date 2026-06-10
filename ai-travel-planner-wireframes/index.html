@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Travel Planner — Wireframes</title>
+<style>
+  /* ── Fonts ── */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+  :root {
+    --ink:        #1C1C2E;
+    --ink-2:      #6B7280;
+    --ink-3:      #B0B7C3;
+    --line:       #E5E7EB;
+    --surface:    #FFFFFF;
+    --bg:         #F7F5F2;
+    --saffron:    #E8621A;
+    --saffron-lt: #F7894A;
+    --saffron-bg: #FFF4EE;
+    --indigo:     #3D3480;
+    --indigo-lt:  #5B52CC;
+    --success:    #16A34A;
+    --r:          10px;
+    --shadow:     0 2px 8px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #ECEAF6;
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── Shell ── */
+  .shell {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 260px;
+    background: var(--indigo);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+  }
+
+  .sidebar-logo-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .sidebar-logo-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,.5);
+    margin-top: 4px;
+    letter-spacing: .04em;
+  }
+
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.4);
+    padding: 20px 24px 8px;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,.7);
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all .15s;
+    text-decoration: none;
+  }
+
+  .sidebar-item:hover,
+  .sidebar-item.active {
+    background: rgba(255,255,255,.08);
+    color: #fff;
+    border-left-color: var(--saffron-lt);
+  }
+
+  .sidebar-item .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.25);
+    flex-shrink: 0;
+  }
+
+  .sidebar-item.active .dot { background: var(--saffron-lt); }
+
+  .sidebar-screen-num {
+    margin-left: auto;
+    font-size: 10px;
+    background: rgba(255,255,255,.1);
+    border-radius: 999px;
+    padding: 2px 7px;
+    color: rgba(255,255,255,.5);
+  }
+
+  /* ── Main canvas ── */
+  .canvas {
+    margin-left: 260px;
+    flex: 1;
+    padding: 40px 48px;
+  }
+
+  /* ── Page header ── */
+  .page-header {
+    margin-bottom: 36px;
+  }
+
+  .page-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--saffron);
+    margin-bottom: 6px;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .page-desc {
+    font-size: 14px;
+    color: var(--ink-2);
+    max-width: 560px;
+    line-height: 1.55;
+  }
+
+  /* ── Screen wrapper ── */
+  .screen {
+    display: none;
+  }
+
+  .screen.active {
+    display: block;
+  }
+
+  /* ── Device frame ── */
+  .device-frame {
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.12), 0 1px 4px rgba(0,0,0,.08);
+    overflow: hidden;
+    max-width: 900px;
+    border: 1px solid var(--line);
+  }
+
+  .device-bar {
+    background: #F3F4F6;
+    border-bottom: 1px solid var(--line);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .device-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .device-dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  .device-dots span:nth-child(1) { background: #FF5F56; }
+  .device-dots span:nth-child(2) { background: #FFBD2E; }
+  .device-dots span:nth-child(3) { background: #27C93F; }
+
+  .device-url {
+    flex: 1;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--ink-2);
+    text-align: center;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  /* ── Annotation layer ── */
+  .annotations {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    max-width: 900px;
+  }
+
+  .annotation {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    color: #92400E;
+    line-height: 1.5;
+  }
+
+  .annotation strong {
+    display: block;
+    font-weight: 700;
+    color: #78350F;
+    margin-bottom: 3px;
+  }
+
+  /* ═══════════════════════════════════════════
+     WIREFRAME COMPONENT STYLES
+  ═══════════════════════════════════════════ */
+
+  /* App header */
+  .wf-header {
+    background: var(--indigo);
+    padding: 32px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .wf-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 20% 50%, rgba(232,98,26,.3) 0%, transparent 70%);
+  }
+
+  .wf-header-badge {
+    display: inline-block;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.8);
+    margin-bottom: 14px;
+    position: relative;
+  }
+
+  .wf-header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #fff;
+    position: relative;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .wf-header-title span { color: var(--saffron-lt); }
+
+  .wf-header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,.6);
+    position: relative;
+  }
+
+  /* Form card */
+  .wf-card {
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin: 0 40px 32px;
+    transform: translateY(-20px);
+  }
+
+  .wf-card-header {
+    background: var(--saffron-bg);
+    border-bottom: 1px solid #F3E5DA;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .wf-card-icon {
+    width: 40px; height: 40px;
+    background: var(--saffron);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .wf-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .wf-card-title small {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ink-2);
+    margin-top: 2px;
+  }
+
+  .wf-form {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .wf-section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .wf-section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .wf-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .wf-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .wf-required { color: var(--saffron); }
+
+  .wf-input {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1.5px solid var(--line);
+    border-radius: 7px;
+    font-size: 14px;
+    color: var(--ink-2);
+    background: #FAFAFA;
+  }
+
+  .wf-input.filled {
+    border-color: var(--saffron);
+    color: var(--ink);
+    background: #fff;
+  }
+
+  .wf-row-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .wf-row-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  /* Quick picks */
+  .wf-quick-picks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .wf-quick-btn {
+    padding: 4px 11px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: #FAFAFA;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+
+  .wf-quick-btn.active {
+    border-color: var(--saffron);
+    color: var(--saffron);
+    background: var(--saffron-bg);
+  }
+
+  /* Style pills */
+  .wf-style-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .wf-style-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 14px 8px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: #FAFAFA;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+
+  .wf-style-pill.active {
+    border-color: var(--saffron);
+    background: var(--saffron-bg);
+    color: var(--saffron);
+    font-weight: 600;
+  }
+
+  /* Interest pills */
+  .wf-interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .wf-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 13px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: #FAFAFA;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+
+  .wf-pill.selected {
+    border-color: var(--saffron);
+    background: var(--saffron-bg);
+    color: var(--saffron);
+    font-weight: 600;
+  }
+
+  /* Submit button */
+  .wf-btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--saffron) 0%, #C44E10 100%);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  /* Loading */
+  .wf-loading-overlay {
+    background: var(--surface);
+    padding: 60px 40px;
+    text-align: center;
+  }
+
+  .wf-spinner-ring {
+    width: 56px; height: 56px;
+    border: 4px solid var(--line);
+    border-top-color: var(--saffron);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+  }
+
+  .wf-loading-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .wf-loading-sub {
+    font-size: 13px;
+    color: var(--ink-2);
+    margin-bottom: 28px;
+  }
+
+  .wf-progress-track {
+    height: 6px;
+    background: var(--line);
+    border-radius: 999px;
+    max-width: 340px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .wf-progress-fill {
+    height: 100%;
+    width: 65%;
+    background: linear-gradient(90deg, var(--saffron), var(--saffron-lt));
+    border-radius: 999px;
+  }
+
+  .wf-loading-steps {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 24px;
+  }
+
+  .wf-loading-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+
+  .wf-loading-step.done { color: var(--success); }
+  .wf-loading-step.active { color: var(--saffron); }
+
+  .wf-step-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+
+  .wf-loading-step.done .wf-step-dot {
+    background: var(--success);
+    border-color: var(--success);
+    color: #fff;
+  }
+
+  .wf-loading-step.active .wf-step-dot {
+    border-color: var(--saffron);
+    color: var(--saffron);
+  }
+
+  /* Results */
+  .wf-results-wrap {
+    background: var(--bg);
+    padding: 0 40px 40px;
+  }
+
+  /* Hero result banner */
+  .wf-result-hero {
+    background: linear-gradient(135deg, var(--indigo) 0%, var(--indigo-lt) 100%);
+    border-radius: 14px;
+    padding: 28px 32px;
+    color: #fff;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .wf-result-hero-badge {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+
+  .wf-result-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+  }
+
+  .wf-result-hero-meta {
+    font-size: 13px;
+    opacity: .7;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .wf-result-hero-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .wf-result-hero-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .wf-hero-btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: default;
+  }
+
+  .wf-hero-btn.primary {
+    background: var(--saffron);
+    color: #fff;
+  }
+
+  .wf-hero-btn.secondary {
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.25);
+  }
+
+  /* Result grid */
+  .wf-result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .wf-result-grid.full { grid-template-columns: 1fr; }
+  .wf-result-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+
+  .wf-rcard {
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .wf-rcard-header {
+    padding: 14px 18px 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+    margin-bottom: 0;
+  }
+
+  .wf-rcard-body { padding: 16px 18px; }
+
+  /* Budget breakdown */
+  .wf-budget-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .wf-budget-item {
+    background: var(--saffron-bg);
+    border: 1px solid #F3E5DA;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .wf-budget-icon { font-size: 18px; margin-bottom: 4px; }
+  .wf-budget-amt { font-size: 14px; font-weight: 700; color: var(--saffron); }
+  .wf-budget-lbl { font-size: 10px; color: var(--ink-2); margin-top: 2px; text-transform: capitalize; }
+
+  /* Day card */
+  .wf-day {
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .wf-day-header {
+    background: var(--bg);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .wf-day-num {
+    font-weight: 700;
+    color: var(--indigo);
+    font-size: 14px;
+  }
+
+  .wf-day-cost {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--saffron);
+    background: var(--saffron-bg);
+    padding: 2px 10px;
+    border-radius: 999px;
+  }
+
+  .wf-day-body { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+
+  .wf-day-section-lbl {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 6px;
+  }
+
+  .wf-activity {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: #F8FBFF;
+    border: 1px solid #E8F0FE;
+    border-radius: 7px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+  }
+
+  .wf-act-time { font-size: 11px; font-weight: 700; color: var(--indigo); min-width: 60px; }
+  .wf-act-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .wf-act-loc  { font-size: 11px; color: var(--ink-2); margin-top: 2px; }
+  .wf-act-desc { font-size: 11px; color: var(--ink-2); margin-top: 3px; line-height: 1.4; }
+  .wf-act-cost { font-size: 12px; font-weight: 700; color: var(--success); margin-left: auto; white-space: nowrap; }
+
+  .wf-meal {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #FFF8F3;
+    border: 1px solid #F3E5DA;
+    border-radius: 7px;
+    padding: 8px 12px;
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .wf-meal-type {
+    background: var(--saffron);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: capitalize;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .wf-meal-info { flex: 1; color: var(--ink); }
+  .wf-meal-cost { font-weight: 700; color: var(--success); }
+
+  /* Hotel card */
+  .wf-hotel {
+    background: #F8F5FF;
+    border: 1px solid #E2D9F3;
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  .wf-hotel-name { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+
+  .wf-hotel-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-2);
+    margin-bottom: 10px;
+  }
+
+  .wf-hotel-tag {
+    background: var(--indigo);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 999px;
+  }
+
+  .wf-amenities { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .wf-amenity {
+    background: #fff;
+    border: 1px solid #E2D9F3;
+    color: var(--indigo);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  /* Lists */
+  .wf-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+  .wf-list-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+
+  .wf-list-icon { flex-shrink: 0; }
+
+  /* CTA */
+  .wf-cta {
+    background: linear-gradient(135deg, #FFF4EE 0%, #FFF8F3 100%);
+    border: 1.5px solid #F3E5DA;
+    border-radius: 14px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .wf-cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .wf-cta-sub { font-size: 12px; color: var(--ink-2); }
+
+  .wf-cta-btn {
+    background: linear-gradient(135deg, var(--saffron) 0%, #C44E10 100%);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 22px;
+    white-space: nowrap;
+  }
+
+  /* Footer */
+  .wf-footer {
+    background: var(--ink);
+    color: rgba(255,255,255,.45);
+    text-align: center;
+    padding: 16px;
+    font-size: 12px;
+  }
+
+  .wf-footer span { color: var(--saffron-lt); }
+
+  /* Error screen */
+  .wf-error-banner {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #DC2626;
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+
+  /* Mobile frame */
+  .mobile-frame {
+    width: 375px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 24px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.18);
+    overflow: hidden;
+    border: 1.5px solid var(--line);
+  }
+
+  .mobile-status {
+    background: var(--indigo);
+    padding: 10px 20px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,.8);
+  }
+
+  .mobile-scroll { max-height: 640px; overflow-y: auto; }
+
+  /* Flow diagram */
+  .flow-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    padding: 20px 0;
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    width: 140px;
+  }
+
+  .flow-box {
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 12px;
+    text-align: center;
+    width: 120px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+
+  .flow-box.highlight { border-color: var(--saffron); background: var(--saffron-bg); }
+  .flow-box.ai        { border-color: var(--indigo); background: #F0EEFF; }
+
+  .flow-box-icon { font-size: 22px; margin-bottom: 6px; }
+
+  .flow-box-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+
+  .flow-box-sub { font-size: 10px; color: var(--ink-2); line-height: 1.3; }
+
+  .flow-arrow {
+    font-size: 20px;
+    color: var(--ink-3);
+    flex-shrink: 0;
+    margin-top: -20px;
+  }
+
+  /* Component map */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 900px;
+  }
+
+  .comp-card {
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 18px;
+  }
+
+  .comp-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .comp-spec {
+    font-size: 11px;
+    color: var(--ink-2);
+    line-height: 1.6;
+  }
+
+  .comp-spec li { margin-left: 14px; margin-bottom: 2px; }
+
+  /* Scroll hint in device */
+  .scroll-hint {
+    text-align: center;
+    padding: 10px;
+    font-size: 11px;
+    color: var(--ink-3);
+    border-top: 1px solid var(--line);
+    background: #FAFAFA;
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-title">✈️ AI Travel Planner</div>
+      <div class="sidebar-logo-sub">WIREFRAME DOCUMENT · v1.0</div>
+    </div>
+
+    <div class="sidebar-section-label">Screens</div>
+
+    <a class="sidebar-item active" onclick="showScreen('s1')">
+      <span class="dot"></span> Home / Form
+      <span class="sidebar-screen-num">S-01</span>
+    </a>
+    <a class="sidebar-item" onclick="showScreen('s2')">
+      <span class="dot"></span> Loading State
+      <span class="sidebar-screen-num">S-02</span>
+    </a>
+    <a class="sidebar-item" onclick="showScreen('s3')">
+      <span class="dot"></span> Results — Overview
+      <span class="sidebar-screen-num">S-03</span>
+    </a>
+    <a class="sidebar-item" onclick="showScreen('s4')">
+      <span class="dot"></span> Results — Day Detail
+      <span class="sidebar-screen-num">S-04</span>
+    </a>
+    <a class="sidebar-item" onclick="showScreen('s5')">
+      <span class="dot"></span> Error State
+      <span class="sidebar-screen-num">S-05</span>
+    </a>
+    <a class="sidebar-item" onclick="showScreen('s6')">
+      <span class="dot"></span> Mobile View
+      <span class="sidebar-screen-num">S-06</span>
+    </a>
+
+    <div class="sidebar-section-label">Documentation</div>
+
+    <a class="sidebar-item" onclick="showScreen('s7')">
+      <span class="dot"></span> User Flow Diagram
+      <span class="sidebar-screen-num">D-01</span>
+    </a>
+    <a class="sidebar-item" onclick="showScreen('s8')">
+      <span class="dot"></span> Component Map
+      <span class="sidebar-screen-num">D-02</span>
+    </a>
+  </aside>
+
+  <!-- ── Canvas ── -->
+  <main class="canvas">
+
+    <!-- ════ S-01 HOME / FORM ════ -->
+    <div id="s1" class="screen active">
+      <div class="page-header">
+        <div class="page-eyebrow">Screen S-01</div>
+        <h1 class="page-title">Home — Trip Planner Form</h1>
+        <p class="page-desc">The landing screen where users input their trip preferences. Contains the header, destination input with quick-picks, numeric fields, travel style selector, interest pills, and the primary CTA.</p>
+      </div>
+
+      <div class="device-frame">
+        <div class="device-bar">
+          <div class="device-dots"><span></span><span></span><span></span></div>
+          <div class="device-url">localhost:3000</div>
+        </div>
+
+        <!-- App header -->
+        <div class="wf-header">
+          <div class="wf-header-badge">✦ AI-Powered</div>
+          <div class="wf-header-title">Plan your perfect<br/><span>Indian adventure</span></div>
+          <div class="wf-header-sub">Describe your dream trip — our AI builds a personalised day-by-day itinerary in seconds.</div>
+        </div>
+
+        <!-- Form card -->
+        <div style="background:var(--bg); padding: 0 40px 40px;">
+          <div class="wf-card">
+            <div class="wf-card-header">
+              <div class="wf-card-icon">🗺️</div>
+              <div class="wf-card-title">
+                Plan your trip
+                <small>Fill in your preferences — AI does the rest</small>
+              </div>
+            </div>
+
+            <div class="wf-form">
+
+              <div class="wf-section-label">
+                <span>Where &amp; When</span>
+                <span class="wf-section-line"></span>
+              </div>
+
+              <!-- Destination -->
+              <div class="wf-field">
+                <div class="wf-label">📍 Destination <span class="wf-required">*</span></div>
+                <input class="wf-input filled" value="Rajasthan" readonly />
+                <div class="wf-quick-picks">
+                  <span style="font-size:11px;color:var(--ink-2);font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Popular:</span>
+                  <span class="wf-quick-btn">Goa</span>
+                  <span class="wf-quick-btn active">Rajasthan</span>
+                  <span class="wf-quick-btn">Kerala</span>
+                  <span class="wf-quick-btn">Ladakh</span>
+                  <span class="wf-quick-btn">Mumbai</span>
+                </div>
+              </div>
+
+              <!-- 3 cols -->
+              <div class="wf-row-3">
+                <div class="wf-field">
+                  <div class="wf-label">📅 Duration (days) <span class="wf-required">*</span></div>
+                  <input class="wf-input filled" value="5" readonly />
+                </div>
+                <div class="wf-field">
+                  <div class="wf-label">💰 Budget (₹) <span class="wf-required">*</span></div>
+                  <input class="wf-input filled" value="45,000" readonly />
+                </div>
+                <div class="wf-field">
+                  <div class="wf-label">👥 Group Size</div>
+                  <input class="wf-input filled" value="3" readonly />
+                </div>
+              </div>
+
+              <!-- Travel style -->
+              <div class="wf-field">
+                <div class="wf-label">🎯 Travel Style</div>
+                <div class="wf-style-row">
+                  <div class="wf-style-pill"><span>🎒</span><span>Budget Traveler</span></div>
+                  <div class="wf-style-pill active"><span>⚖️</span><span>Balanced Experience</span></div>
+                  <div class="wf-style-pill"><span>✨</span><span>Luxury Travel</span></div>
+                </div>
+              </div>
+
+              <div class="wf-section-label">
+                <span>Your Interests</span>
+                <span class="wf-section-line"></span>
+              </div>
+
+              <!-- Interests -->
+              <div class="wf-field">
+                <div class="wf-label">❤️ Select everything that excites you</div>
+                <div class="wf-interests">
+                  <span class="wf-pill selected">🏛️ Heritage ✓</span>
+                  <span class="wf-pill">🧗 Adventure</span>
+                  <span class="wf-pill">🌃 Nightlife</span>
+                  <span class="wf-pill selected">🌿 Nature ✓</span>
+                  <span class="wf-pill selected">🎭 Culture ✓</span>
+                  <span class="wf-pill">🍛 Food</span>
+                  <span class="wf-pill">🛍️ Shopping</span>
+                  <span class="wf-pill">🧘 Relaxation</span>
+                  <span class="wf-pill">📷 Photography</span>
+                  <span class="wf-pill">🕌 Spiritual</span>
+                </div>
+              </div>
+
+              <div class="wf-btn-submit">✈️ Create My AI Trip Plan</div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="wf-footer">© 2025 AI Travel Planner — powered by <span>Groq AI</span></div>
+      </div>
+
+      <div class="annotations">
+        <div class="annotation"><strong>A1 — Header</strong>Deep indigo gradient with ambient radial glow. "AI-Powered" pill badge + display headline with saffron accent on key word.</div>
+        <div class="annotation"><strong>A2 — Quick-Pick Chips</strong>Pre-filled popular destinations fetched from <code>GET /api/popular-destinations</code>. Clicking auto-fills the text input.</div>
+        <div class="annotation"><strong>A3 — Travel Style</strong>3-column pill selector. One option active at a time. Visual icon + label. Value sent to API: 'budget' | 'balanced' | 'luxury'.</div>
+        <div class="annotation"><strong>A4 — Interest Pills</strong>Multi-select toggle. Pill turns saffron + shows ✓ checkmark on selection. At least one required (defaults to 'sightseeing, culture').</div>
+        <div class="annotation"><strong>A5 — Submit CTA</strong>Full-width saffron gradient button. Disabled until Destination field has a value. Shows spinner + "Building your itinerary…" on submit.</div>
+      </div>
+    </div>
+
+    <!-- ════ S-02 LOADING ════ -->
+    <div id="s2" class="screen">
+      <div class="page-header">
+        <div class="page-eyebrow">Screen S-02</div>
+        <h1 class="page-title">Loading State</h1>
+        <p class="page-desc">Shown immediately after form submission while the backend calls the Groq AI API. Typically lasts 5–15 seconds. Keeps user engaged with step indicators.</p>
+      </div>
+
+      <div class="device-frame">
+        <div class="device-bar">
+          <div class="device-dots"><span></span><span></span><span></span></div>
+          <div class="device-url">localhost:3000</div>
+        </div>
+
+        <div class="wf-header">
+          <div class="wf-header-badge">✦ AI-Powered</div>
+          <div class="wf-header-title">Plan your perfect<br/><span>Indian adventure</span></div>
+          <div class="wf-header-sub">Describe your dream trip — our AI builds a personalised day-by-day itinerary in seconds.</div>
+        </div>
+
+        <div style="background:var(--bg);padding:0 40px 40px;">
+          <div class="wf-card">
+            <div class="wf-card-header">
+              <div class="wf-card-icon">🗺️</div>
+              <div class="wf-card-title">Plan your trip<small>Fill in your preferences — AI does the rest</small></div>
+            </div>
+            <div class="wf-loading-overlay">
+              <div class="wf-spinner-ring"></div>
+              <div class="wf-loading-title">Building your Rajasthan itinerary…</div>
+              <div class="wf-loading-sub">Our AI is crafting a personalised 5-day plan for you</div>
+              <div class="wf-progress-track">
+                <div class="wf-progress-fill"></div>
+              </div>
+              <div class="wf-loading-steps">
+                <div class="wf-loading-step done">
+                  <div class="wf-step-dot">✓</div>
+                  <span>Analysing<br/>preferences</span>
+                </div>
+                <div class="wf-loading-step active">
+                  <div class="wf-step-dot">⟳</div>
+                  <span>Generating<br/>itinerary</span>
+                </div>
+                <div class="wf-loading-step">
+                  <div class="wf-step-dot">3</div>
+                  <span>Calculating<br/>budget</span>
+                </div>
+                <div class="wf-loading-step">
+                  <div class="wf-step-dot">4</div>
+                  <span>Finalising<br/>tips</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="wf-footer">© 2025 AI Travel Planner — powered by <span>Groq AI</span></div>
+      </div>
+
+      <div class="annotations">
+        <div class="annotation"><strong>A1 — Spinner</strong>Rotating ring in saffron. Replaces form submit button text with "Building your itinerary…" and disables the button.</div>
+        <div class="annotation"><strong>A2 — Progress bar</strong>Animated fill. Not tied to real progress — cosmetic. Gives user confidence the request is running.</div>
+        <div class="annotation"><strong>A3 — Step indicators</strong>4 steps: Analysing → Generating → Budget → Tips. "Done" = green fill, "Active" = saffron ring, "Pending" = grey.</div>
+      </div>
+    </div>
+
+    <!-- ════ S-03 RESULTS OVERVIEW ════ -->
+    <div id="s3" class="screen">
+      <div class="page-header">
+        <div class="page-eyebrow">Screen S-03</div>
+        <h1 class="page-title">Results — Overview</h1>
+        <p class="page-desc">Appears below the form after the AI response is received. Shows the trip hero banner, budget breakdown, accommodation, highlights, and local tips.</p>
+      </div>
+
+      <div class="device-frame">
+        <div class="device-bar">
+          <div class="device-dots"><span></span><span></span><span></span></div>
+          <div class="device-url">localhost:3000 ↓ scrolled</div>
+        </div>
+
+        <div style="background:var(--bg); padding:24px 40px 40px;">
+
+          <!-- Hero result -->
+          <div class="wf-result-hero">
+            <div>
+              <div class="wf-result-hero-badge">✓ Itinerary Ready</div>
+              <div class="wf-result-hero-title">Your trip to Rajasthan 🎉</div>
+              <div class="wf-result-hero-meta">
+                <span>📅 5 days</span>
+                <span>💰 ₹45,000 total budget</span>
+                <span>👥 3 people</span>
+                <span>🏛️ Heritage · Nature · Culture</span>
+              </div>
+            </div>
+            <div class="wf-result-hero-actions">
+              <div class="wf-hero-btn secondary">📋 Copy Summary</div>
+              <div class="wf-hero-btn primary">🔄 Plan Again</div>
+            </div>
+          </div>
+
+          <!-- Budget breakdown -->
+          <div class="wf-rcard" style="margin-bottom:16px;">
+            <div class="wf-rcard-header">💰 Budget Breakdown</div>
+            <div class="wf-rcard-body">
+              <div class="wf-budget-grid">
+                <div class="wf-budget-item"><div class="wf-budget-icon">🏨</div><div class="wf-budget-amt">₹15,750</div><div class="wf-budget-lbl">Accommodation</div></div>
+                <div class="wf-budget-item"><div class="wf-budget-icon">🍽️</div><div class="wf-budget-amt">₹9,000</div><div class="wf-budget-lbl">Food</div></div>
+                <div class="wf-budget-item"><div class="wf-budget-icon">🎯</div><div class="wf-budget-amt">₹9,000</div><div class="wf-budget-lbl">Activities</div></div>
+                <div class="wf-budget-item"><div class="wf-budget-icon">🚗</div><div class="wf-budget-amt">₹6,750</div><div class="wf-budget-lbl">Transport</div></div>
+                <div class="wf-budget-item"><div class="wf-budget-icon">🛍️</div><div class="wf-budget-amt">₹3,150</div><div class="wf-budget-lbl">Shopping</div></div>
+                <div class="wf-budget-item"><div class="wf-budget-icon">📦</div><div class="wf-budget-amt">₹1,350</div><div class="wf-budget-lbl">Misc</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accommodation + Highlights 2-col -->
+          <div class="wf-result-grid" style="margin-bottom:16px;">
+            <div class="wf-rcard">
+              <div class="wf-rcard-header">🏨 Accommodation</div>
+              <div class="wf-rcard-body">
+                <div class="wf-hotel">
+                  <div class="wf-hotel-name">Umaid Bhawan Heritage Hotel</div>
+                  <div class="wf-hotel-meta">
+                    <span class="wf-hotel-tag">Heritage Property</span>
+                    <span>₹3,150 / night</span>
+                    <span>Total ₹15,750</span>
+                  </div>
+                  <div class="wf-amenities">
+                    <span class="wf-amenity">WiFi</span>
+                    <span class="wf-amenity">Breakfast</span>
+                    <span class="wf-amenity">Pool</span>
+                    <span class="wf-amenity">AC</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="wf-rcard">
+              <div class="wf-rcard-header">⭐ Trip Highlights</div>
+              <div class="wf-rcard-body">
+                <ul class="wf-list">
+                  <li class="wf-list-item"><span class="wf-list-icon">✨</span><span>Sunrise at Amber Fort, Jaipur — golden light on sandstone walls</span></li>
+                  <li class="wf-list-item"><span class="wf-list-icon">✨</span><span>Camel safari at Sam Sand Dunes, Jaisalmer</span></li>
+                  <li class="wf-list-item"><span class="wf-list-icon">✨</span><span>Evening aarti at Pushkar Lake</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tips -->
+          <div class="wf-rcard" style="margin-bottom:16px;">
+            <div class="wf-rcard-header">💡 Local Tips</div>
+            <div class="wf-rcard-body">
+              <ul class="wf-list" style="columns:2; column-gap:24px;">
+                <li class="wf-list-item"><span class="wf-list-icon" style="color:var(--indigo)">💡</span><span>Visit forts before 9AM to beat the crowd and heat</span></li>
+                <li class="wf-list-item"><span class="wf-list-icon" style="color:var(--indigo)">💡</span><span>Carry cash — most village vendors don't accept cards</span></li>
+                <li class="wf-list-item"><span class="wf-list-icon" style="color:var(--indigo)">💡</span><span>October–March is the best season for Rajasthan</span></li>
+                <li class="wf-list-item"><span class="wf-list-icon" style="color:var(--indigo)">💡</span><span>Bargain respectfully at Johari Bazaar — 30–40% off is normal</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="wf-cta">
+            <div>
+              <div class="wf-cta-title">Ready to make it official?</div>
+              <div class="wf-cta-sub">One-click booking · Best prices · 24/7 support</div>
+            </div>
+            <div class="wf-cta-btn">🎫 Book Now</div>
+          </div>
+
+        </div>
+        <div class="scroll-hint">↑ scroll up to see Day-by-Day section (Screen S-04) ↑</div>
+        <div class="wf-footer">© 2025 AI Travel Planner — powered by <span>Groq AI</span></div>
+      </div>
+
+      <div class="annotations">
+        <div class="annotation"><strong>A1 — Result Hero</strong>Indigo gradient banner. Shows destination, duration, budget, group size, and selected interests as meta tags. "Plan Again" scrolls back to form.</div>
+        <div class="annotation"><strong>A2 — Budget Cards</strong>6-cell grid, saffron background. Each cell: emoji icon, ₹ amount (bold saffron), category label.</div>
+        <div class="annotation"><strong>A3 — Accommodation</strong>Hotel name, type badge (indigo pill), price per night + total, amenity chips.</div>
+        <div class="annotation"><strong>A4 — Highlights &amp; Tips</strong>Side-by-side cards. Tips use 2-column layout on wider screens for readability.</div>
+        <div class="annotation"><strong>A5 — CTA Banner</strong>Saffron gradient button. Can be wired to a booking partner or a future booking flow.</div>
+      </div>
+    </div>
+
+    <!-- ════ S-04 DAY DETAIL ════ -->
+    <div id="s4" class="screen">
+      <div class="page-header">
+        <div class="page-eyebrow">Screen S-04</div>
+        <h1 class="page-title">Results — Day-by-Day Itinerary</h1>
+        <p class="page-desc">The day-by-day section sits between the form and the overview cards. Each day is a collapsible card with activities (time, name, location, cost) and meals.</p>
+      </div>
+
+      <div class="device-frame">
+        <div class="device-bar">
+          <div class="device-dots"><span></span><span></span><span></span></div>
+          <div class="device-url">localhost:3000 ↓ scrolled</div>
+        </div>
+
+        <div style="background:var(--bg); padding:24px 40px 40px;">
+          <div class="wf-rcard">
+            <div class="wf-rcard-header">📅 Day-by-Day Itinerary</div>
+            <div class="wf-rcard-body">
+
+              <!-- Day 1 -->
+              <div class="wf-day">
+                <div class="wf-day-header">
+                  <div class="wf-day-num">Day 1</div>
+                  <div class="wf-day-cost">₹2,500 est. cost</div>
+                </div>
+                <div class="wf-day-body">
+                  <div class="wf-day-section-lbl">🎯 Activities</div>
+                  <div class="wf-activity">
+                    <div class="wf-act-time">9:00 AM</div>
+                    <div style="flex:1">
+                      <div class="wf-act-name">Exploring Hawa Mahal</div>
+                      <div class="wf-act-loc">📍 Jaipur</div>
+                      <div class="wf-act-desc">Start the day by visiting the iconic palace of winds — intricate pink sandstone facade with 953 small windows.</div>
+                    </div>
+                    <div class="wf-act-cost">₹50</div>
+                  </div>
+                  <div class="wf-activity">
+                    <div class="wf-act-time">12:00 PM</div>
+                    <div style="flex:1">
+                      <div class="wf-act-name">Shopping at Johari Bazaar</div>
+                      <div class="wf-act-loc">📍 Jaipur</div>
+                      <div class="wf-act-desc">Browse traditional Rajasthani jewellery, textiles, and handicrafts at this historic market.</div>
+                    </div>
+                    <div class="wf-act-cost">₹1,000</div>
+                  </div>
+                  <div class="wf-activity">
+                    <div class="wf-act-time">4:00 PM</div>
+                    <div style="flex:1">
+                      <div class="wf-act-name">Sunset at Nahargarh Fort</div>
+                      <div class="wf-act-loc">📍 Jaipur</div>
+                      <div class="wf-act-desc">Panoramic view of the Pink City from above. Arrive 30 mins before sunset for the best light.</div>
+                    </div>
+                    <div class="wf-act-cost">₹200</div>
+                  </div>
+                  <div class="wf-day-section-lbl" style="margin-top:8px;">🍽️ Meals</div>
+                  <div class="wf-meal">
+                    <span class="wf-meal-type">Breakfast</span>
+                    <span class="wf-meal-info">Sagar Ratna · North Indian cuisine</span>
+                    <span class="wf-meal-cost">₹200</span>
+                  </div>
+                  <div class="wf-meal">
+                    <span class="wf-meal-type">Lunch</span>
+                    <span class="wf-meal-info">Chokhi Dhani · Rajasthani cuisine</span>
+                    <span class="wf-meal-cost">₹500</span>
+                  </div>
+                  <div class="wf-meal">
+                    <span class="wf-meal-type">Dinner</span>
+                    <span class="wf-meal-info">Peacock Rooftop · Continental</span>
+                    <span class="wf-meal-cost">₹550</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Day 2 -->
+              <div class="wf-day">
+                <div class="wf-day-header">
+                  <div class="wf-day-num">Day 2</div>
+                  <div class="wf-day-cost">₹2,200 est. cost</div>
+                </div>
+                <div class="wf-day-body">
+                  <div class="wf-day-section-lbl">🎯 Activities</div>
+                  <div class="wf-activity">
+                    <div class="wf-act-time">8:00 AM</div>
+                    <div style="flex:1">
+                      <div class="wf-act-name">Amber Fort Day Trip</div>
+                      <div class="wf-act-loc">📍 Jaipur outskirts</div>
+                      <div class="wf-act-desc">Magnificent hilltop fort with stunning views of the Maota Lake and surrounding valleys.</div>
+                    </div>
+                    <div class="wf-act-cost">₹200</div>
+                  </div>
+                  <div class="wf-day-section-lbl" style="margin-top:8px;">🍽️ Meals</div>
+                  <div class="wf-meal">
+                    <span class="wf-meal-type">Breakfast</span>
+                    <span class="wf-meal-info">Hotel included · Continental</span>
+                    <span class="wf-meal-cost">₹0</span>
+                  </div>
+                  <div class="wf-meal">
+                    <span class="wf-meal-type">Lunch</span>
+                    <span class="wf-meal-info">Anokhi Café · Organic Indian</span>
+                    <span class="wf-meal-cost">₹400</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="wf-footer">© 2025 AI Travel Planner — powered by <span>Groq AI</span></div>
+      </div>
+
+      <div class="annotations">
+        <div class="annotation"><strong>A1 — Day cost label</strong>Shows "₹X,XXX est. cost" (not "today"). Saffron pill on the right side of the day header.</div>
+        <div class="annotation"><strong>A2 — Activity row</strong>Time (indigo, bold) | Name + Location + Description (body) | Cost (green, right-aligned). Light blue background.</div>
+        <div class="annotation"><strong>A3 — Meal row</strong>Meal type pill (saffron) | Restaurant · Cuisine | Cost (green). Light orange background. Distinct from activity rows.</div>
+        <div class="annotation"><strong>A4 — Day sections</strong>Activities and Meals are visually separated by a dashed border + section label. Each day card is independently bordered.</div>
+      </div>
+    </div>
+
+    <!-- ════ S-05 ERROR STATE ════ -->
+    <div id="s5" class="screen">
+      <div class="page-header">
+        <div class="page-eyebrow">Screen S-05</div>
+        <h1 class="page-title">Error State</h1>
+        <p class="page-desc">Shown when the API call fails — network error, quota exceeded, invalid key, or server timeout. Error message is displayed inline above the submit button.</p>
+      </div>
+
+      <div class="device-frame">
+        <div class="device-bar">
+          <div class="device-dots"><span></span><span></span><span></span></div>
+          <div class="device-url">localhost:3000</div>
+        </div>
+        <div class="wf-header">
+          <div class="wf-header-badge">✦ AI-Powered</div>
+          <div class="wf-header-title">Plan your perfect<br/><span>Indian adventure</span></div>
+          <div class="wf-header-sub">Describe your dream trip — our AI builds a personalised day-by-day itinerary in seconds.</div>
+        </div>
+        <div style="background:var(--bg);padding:0 40px 40px;">
+          <div class="wf-card">
+            <div class="wf-card-header">
+              <div class="wf-card-icon">🗺️</div>
+              <div class="wf-card-title">Plan your trip<small>Fill in your preferences — AI does the rest</small></div>
+            </div>
+            <div class="wf-form">
+              <div class="wf-field">
+                <div class="wf-label">📍 Destination <span class="wf-required">*</span></div>
+                <input class="wf-input filled" value="Goa" readonly />
+              </div>
+              <div class="wf-row-3">
+                <div class="wf-field">
+                  <div class="wf-label">📅 Duration <span class="wf-required">*</span></div>
+                  <input class="wf-input filled" value="3" readonly />
+                </div>
+                <div class="wf-field">
+                  <div class="wf-label">💰 Budget (₹) <span class="wf-required">*</span></div>
+                  <input class="wf-input filled" value="25,000" readonly />
+                </div>
+                <div class="wf-field">
+                  <div class="wf-label">👥 Group Size</div>
+                  <input class="wf-input filled" value="2" readonly />
+                </div>
+              </div>
+
+              <!-- Error banner variants -->
+              <div>
+                <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-bottom:8px;">Error variants shown:</div>
+                <div class="wf-error-banner">
+                  <span>⚠️</span>
+                  <div>
+                    <strong style="display:block;font-weight:600;margin-bottom:2px;">Something went wrong</strong>
+                    <span>Network Error — check that the backend server is running on port 5000.</span>
+                  </div>
+                </div>
+                <div class="wf-error-banner" style="background:#FFF7ED;border-color:#FED7AA;color:#C2410C;">
+                  <span>⏱️</span>
+                  <div>
+                    <strong style="display:block;font-weight:600;margin-bottom:2px;">Rate limit reached</strong>
+                    <span>Groq API quota exceeded. Please wait a moment and try again.</span>
+                  </div>
+                </div>
+                <div class="wf-error-banner" style="background:#FEF2F2;border-color:#FECACA;color:#DC2626;">
+                  <span>🔑</span>
+                  <div>
+                    <strong style="display:block;font-weight:600;margin-bottom:2px;">API key invalid</strong>
+                    <span>Check your GROQ_API_KEY in backend/.env</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="wf-btn-submit">✈️ Try Again</div>
+            </div>
+          </div>
+        </div>
+        <div class="wf-footer">© 2025 AI Travel Planner — powered by <span>Groq AI</span></div>
+      </div>
+
+      <div class="annotations">
+        <div class="annotation"><strong>A1 — Error banner position</strong>Appears inline between the interests section and the submit button. Does not replace form content.</div>
+        <div class="annotation"><strong>A2 — Error types</strong>3 distinct visual variants: red (server/network), orange (rate limit), red (auth). Each uses a contextual icon and plain-English message.</div>
+        <div class="annotation"><strong>A3 — Form state</strong>Form fields retain their values after error. User doesn't need to re-enter their preferences — just click "Try Again".</div>
+      </div>
+    </div>
+
+    <!-- ════ S-06 MOBILE ════ -->
+    <div id="s6" class="screen">
+      <div class="page-header">
+        <div class="page-eyebrow">Screen S-06</div>
+        <h1 class="page-title">Mobile View</h1>
+        <p class="page-desc">375px viewport — simulates iPhone / Android. 3-column rows collapse to single column. Style pills stack vertically. Interest pills wrap naturally.</p>
+      </div>
+
+      <div class="mobile-frame">
+        <div class="mobile-status">
+          <span>9:41</span>
+          <span>📶 🔋</span>
+        </div>
+
+        <div class="mobile-scroll">
+          <div style="background:var(--indigo);padding:24px 20px 30px;text-align:center;position:relative;overflow:hidden;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7);background:rgba(255,255,255,.1);display:inline-block;padding:3px 12px;border-radius:999px;margin-bottom:10px;">✦ AI-Powered</div>
+            <div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:#fff;line-height:1.2;margin-bottom:6px;">Plan your perfect<br/><span style="color:var(--saffron-lt);">Indian adventure</span></div>
+            <div style="font-size:12px;color:rgba(255,255,255,.6);">AI builds your personalised itinerary in seconds.</div>
+          </div>
+
+          <div style="background:var(--bg);padding:0 16px 24px;">
+            <div style="background:var(--surface);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;transform:translateY(-16px);">
+              <div style="background:var(--saffron-bg);border-bottom:1px solid #F3E5DA;padding:14px 16px;display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;background:var(--saffron);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🗺️</div>
+                <div>
+                  <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;">Plan your trip</div>
+                  <div style="font-size:11px;color:var(--ink-2);">Fill in preferences — AI does the rest</div>
+                </div>
+              </div>
+              <div style="padding:16px;display:flex;flex-direction:column;gap:14px;">
+                <div>
+                  <div style="font-size:11px;font-weight:600;margin-bottom:5px;">📍 Destination *</div>
+                  <div style="border:1.5px solid var(--saffron);border-radius:7px;padding:9px 12px;font-size:13px;background:#fff;">Goa</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;">
+                    <span style="font-size:10px;color:var(--ink-2);font-weight:600;">Popular:</span>
+                    <span class="wf-quick-btn active" style="font-size:11px;">Goa</span>
+                    <span class="wf-quick-btn" style="font-size:11px;">Rajasthan</span>
+                    <span class="wf-quick-btn" style="font-size:11px;">Kerala</span>
+                  </div>
+                </div>
+                <!-- Single column on mobile -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                  <div>
+                    <div style="font-size:11px;font-weight:600;margin-bottom:5px;">📅 Duration *</div>
+                    <div style="border:1.5px solid var(--saffron);border-radius:7px;padding:9px 12px;font-size:13px;background:#fff;">3</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px;font-weight:600;margin-bottom:5px;">💰 Budget *</div>
+                    <div style="border:1.5px solid var(--line);border-radius:7px;padding:9px 12px;font-size:13px;background:#FAFAFA;color:var(--ink-2);">25000</div>
+                  </div>
+                </div>
+                <!-- Style pills vertical on mobile -->
+                <div>
+                  <div style="font-size:11px;font-weight:600;margin-bottom:8px;">🎯 Travel Style</div>
+                  <div style="display:flex;flex-direction:column;gap:7px;">
+                    <div style="border:1.5px solid var(--line);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2);background:#FAFAFA;"><span>🎒</span><span>Budget Traveler</span></div>
+                    <div style="border:1.5px solid var(--saffron);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--saffron);font-weight:600;background:var(--saffron-bg);"><span>⚖️</span><span>Balanced Experience</span></div>
+                    <div style="border:1.5px solid var(--line);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2);background:#FAFAFA;"><span>✨</span><span>Luxury Travel</span></div>
+                  </div>
+                </div>
+                <!-- Interests -->
+                <div>
+                  <div style="font-size:11px;font-weight:600;margin-bottom:8px;">❤️ Your Interests</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span class="wf-pill selected" style="font-size:11px;">🏛️ Heritage ✓</span>
+                    <span class="wf-pill" style="font-size:11px;">🧗 Adventure</span>
+                    <span class="wf-pill selected" style="font-size:11px;">🍛 Food ✓</span>
+                    <span class="wf-pill" style="font-size:11px;">🌿 Nature</span>
+                    <span class="wf-pill" style="font-size:11px;">📷 Photography</span>
+                    <span class="wf-pill" style="font-size:11px;">🕌 Spiritual</span>
+                  </div>
+                </div>
+                <div style="width:100%;padding:13px;background:linear-gradient(135deg,var(--saffron) 0%,#C44E10 100%);color:#fff;font-size:14px;font-weight:600;border-radius:10px;text-align:center;">✈️ Create My AI Trip Plan</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotations" style="max-width:375px;">
+        <div class="annotation"><strong>Mobile changes</strong>3-col number row → 2-col. Travel style pills → vertical stack (full width). All other elements wrap naturally.</div>
+        <div class="annotation"><strong>Touch targets</strong>All interactive elements ≥ 44px tall for comfortable thumb tapping.</div>
+      </div>
+    </div>
+
+    <!-- ════ D-01 USER FLOW ════ -->
+    <div id="s7" class="screen">
+      <div class="page-header">
+        <div class="page-eyebrow">Documentation D-01</div>
+        <h1 class="page-title">User Flow Diagram</h1>
+        <p class="page-desc">End-to-end journey from landing to itinerary. Shows all decision branches including error and fallback paths.</p>
+      </div>
+
+      <div class="device-frame" style="max-width:100%;padding:32px 40px;">
+
+        <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-bottom:24px;">Happy Path</div>
+        <div class="flow-wrap">
+          <div class="flow-step">
+            <div class="flow-box highlight">
+              <div class="flow-box-icon">🏠</div>
+              <div class="flow-box-label">Land on App</div>
+              <div class="flow-box-sub">localhost:3000</div>
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box highlight">
+              <div class="flow-box-icon">📝</div>
+              <div class="flow-box-label">Fill Form</div>
+              <div class="flow-box-sub">Destination, dates, budget, interests</div>
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box highlight">
+              <div class="flow-box-icon">✈️</div>
+              <div class="flow-box-label">Submit</div>
+              <div class="flow-box-sub">Click CTA button</div>
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box ai">
+              <div class="flow-box-icon">⚙️</div>
+              <div class="flow-box-label">POST /api/generate-itinerary</div>
+              <div class="flow-box-sub">Express backend</div>
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box ai">
+              <div class="flow-box-icon">🤖</div>
+              <div class="flow-box-label">Groq AI</div>
+              <div class="flow-box-sub">llama-3.3-70b generates JSON</div>
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box highlight">
+              <div class="flow-box-icon">🗺️</div>
+              <div class="flow-box-label">Display Results</div>
+              <div class="flow-box-sub">Itinerary cards rendered</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin:32px 0 24px;">Error / Fallback Paths</div>
+        <div class="flow-wrap">
+          <div class="flow-step">
+            <div class="flow-box" style="border-color:#FECACA;background:#FEF2F2;">
+              <div class="flow-box-icon">❌</div>
+              <div class="flow-box-label">Network Error</div>
+              <div class="flow-box-sub">Backend not running</div>
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box" style="border-color:#FECACA;background:#FEF2F2;">
+              <div class="flow-box-icon">⚠️</div>
+              <div class="flow-box-label">Show Error Banner</div>
+              <div class="flow-box-sub">Inline error in form</div>
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box highlight">
+              <div class="flow-box-icon">🔄</div>
+              <div class="flow-box-label">User Retries</div>
+              <div class="flow-box-sub">Form values preserved</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flow-wrap" style="margin-top:16px;">
+          <div class="flow-step">
+            <div class="flow-box" style="border-color:#FED7AA;background:#FFF7ED;">
+              <div class="flow-box-icon">📄</div>
+              <div class="flow-box-label">JSON Parse Fails</div>
+              <div class="flow-box-sub">Malformed AI output</div>
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box ai">
+              <div class="flow-box-icon">🛟</div>
+              <div class="flow-box-label">Fallback Itinerary</div>
+              <div class="flow-box-sub">groqService.js generates template</div>
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box highlight">
+              <div class="flow-box-icon">🗺️</div>
+              <div class="flow-box-label">Display Results</div>
+              <div class="flow-box-sub">Basic itinerary shown</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:32px; display:flex; gap:20px; flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);">
+            <div style="width:14px;height:14px;border-radius:3px;background:var(--saffron-bg);border:1.5px solid var(--saffron);"></div>
+            Frontend / User action
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);">
+            <div style="width:14px;height:14px;border-radius:3px;background:#F0EEFF;border:1.5px solid var(--indigo);"></div>
+            Backend / AI service
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);">
+            <div style="width:14px;height:14px;border-radius:3px;background:#FEF2F2;border:1.5px solid #FECACA;"></div>
+            Error state
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);">
+            <div style="width:14px;height:14px;border-radius:3px;background:#FFF7ED;border:1.5px solid #FED7AA;"></div>
+            Fallback path
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ D-02 COMPONENT MAP ════ -->
+    <div id="s8" class="screen">
+      <div class="page-header">
+        <div class="page-eyebrow">Documentation D-02</div>
+        <h1 class="page-title">Component Map</h1>
+        <p class="page-desc">All UI components, their purpose, props, and interaction behaviour. Covers both the form and results sections.</p>
+      </div>
+
+      <div class="comp-grid">
+        <div class="comp-card">
+          <div class="comp-card-title">🗺️ TripPlannerForm</div>
+          <div class="comp-spec">
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Purpose:</strong> Main form container. Manages all state and submits to backend.<br/><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">State:</strong><br/>
+            <ul>
+              <li>formData (destination, duration, budget, groupSize, travelStyle, interests)</li>
+              <li>itinerary, loading, error</li>
+              <li>popularDestinations (from API)</li>
+            </ul><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">API calls:</strong><br/>
+            <ul>
+              <li>GET /api/popular-destinations (on mount)</li>
+              <li>POST /api/generate-itinerary (on submit)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-card-title">🎯 Interest Pills</div>
+          <div class="comp-spec">
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Purpose:</strong> Multi-select interest toggle. Each pill is an independent toggle button.<br/><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Behaviour:</strong><br/>
+            <ul>
+              <li>Click to select (saffron + ✓)</li>
+              <li>Click again to deselect</li>
+              <li>Multiple can be active</li>
+              <li>Defaults to ['sightseeing','culture'] if none selected</li>
+            </ul><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Options:</strong> Heritage, Adventure, Nightlife, Nature, Culture, Food, Shopping, Relaxation, Photography, Spiritual
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-card-title">⚖️ Travel Style Selector</div>
+          <div class="comp-spec">
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Purpose:</strong> Single-select for travel budget style.<br/><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Values sent to API:</strong><br/>
+            <ul>
+              <li>'budget' → Budget Traveler</li>
+              <li>'balanced' → Balanced Experience (default)</li>
+              <li>'luxury' → Luxury Travel</li>
+            </ul><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Layout:</strong> 3-column grid on desktop, vertical stack on mobile
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-card-title">📅 ItineraryResults (inline)</div>
+          <div class="comp-spec">
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Purpose:</strong> Renders the full AI response. Embedded in TripPlannerForm, conditionally shown when itinerary state is set.<br/><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Props:</strong><br/>
+            <ul>
+              <li>itinerary (full JSON from API)</li>
+              <li>preferences (form values for meta display)</li>
+            </ul><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Sections rendered:</strong> Hero banner, Budget breakdown, Daily itinerary, Accommodation, Highlights, Local tips, CTA
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-card-title">🏨 ItineraryDisplay</div>
+          <div class="comp-spec">
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Purpose:</strong> Standalone component for displaying a pre-fetched itinerary outside the form flow.<br/><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Props:</strong><br/>
+            <ul>
+              <li>itinerary (same JSON structure)</li>
+            </ul><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Difference from ItineraryResults:</strong> No preferences display, no hero banner. Just the day-by-day view.
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-card-title">⚙️ groqService.js</div>
+          <div class="comp-spec">
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Purpose:</strong> Backend service. Builds prompt, calls Groq API, parses JSON, returns itinerary or fallback.<br/><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Model:</strong> llama-3.3-70b-versatile<br/><br/>
+            <strong style="font-size:11px;font-weight:700;color:var(--ink);">Error handling:</strong><br/>
+            <ul>
+              <li>401/403 → Invalid API key message</li>
+              <li>429 → Rate limit message</li>
+              <li>JSON parse fail → fallback itinerary</li>
+              <li>Empty response → fallback itinerary</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    // match sidebar item by onclick
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+      if (item.getAttribute('onclick') === `showScreen('${id}')`) {
+        item.classList.add('active');
+      }
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
