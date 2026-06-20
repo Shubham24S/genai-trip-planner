@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'https://your-frontend-domain.vercel.app', // ← replace with your real domain when deploying
+  'https://ai-travel-planner-jtj6.onrender.com', // ← replace with your real domain when deploying
 ];
 
 const corsOptions = {
